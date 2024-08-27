@@ -1,0 +1,9 @@
+{
+  "dev": {
+    "username": "myuser",
+    "password": "mypassword",
+    "database": "mydatabase",
+    "host": "localhost",
+    "dialect": "postgres",
+    "port":"5432"
+  }}

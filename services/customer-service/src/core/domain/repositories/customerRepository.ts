@@ -1,10 +1,10 @@
 import { compareHashPassword, hashPassword } from "../../../utils/authUtils";
 import Customer, { CustomerAttributes } from "../models/customer/Customer";
 type RepositoryResponse<T = any> = {
-  status: "success" | "error"; // Status can only be "success" or "error"
-  msg: string;                 // A message describing the result
-  data: T | null;              // The data returned by the operation
-  statusCode: number;          // The HTTP status code
+  status: "success" | "error";
+  msg: string;
+  data: T | null;
+  statusCode: number;
 }
 function createDefaultResponse<T>({
   status = "error",

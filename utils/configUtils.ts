@@ -1,6 +1,5 @@
 import path from 'path';
 import dotenv from 'dotenv';
-import moduleAlias from 'module-alias'
 
 export function loadEnvVariables(envFilePath: string): { [key: string]: string | undefined } {
   // Load environment variables from the specified file
@@ -11,11 +10,6 @@ export function loadEnvVariables(envFilePath: string): { [key: string]: string |
 }
 
 
-export const modAlias = () => {
-
-  return moduleAlias.addAlias("@src", __dirname + "../../src")
-
-}
 
 
 const { DB_USER_NAME, JWT_SECRET, DB_NAME, DB_USER_PASS, PORT, URI } = loadEnvVariables("../config/dev.env")

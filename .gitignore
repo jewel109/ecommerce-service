@@ -3,3 +3,4 @@
 test.env
 prod.env
 dev.env
+!.env.example

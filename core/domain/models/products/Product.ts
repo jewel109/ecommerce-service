@@ -1,35 +1,41 @@
-
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from "@sequelize/core";
 import { Attribute, PrimaryKey, AutoIncrement, NotNull } from '@sequelize/core/decorators-legacy';
 
-export interface CustomerAttributes {
-  id?: string;
+
+
+export interface ProductAttributes {
   name: string;
-  email: string;
-  password: string;
+  price: number;
+  catagory: string;
+  description: string;
+  stock: number
 }
 
-class Customer extends Model<InferAttributes<Customer>, InferCreationAttributes<Customer>> {
-  // private readonly createdAt!: Date
-  // private readonly updatedAt!: Date
+class Product extends Model<InferAttributes<Product>, InferCreationAttributes<Product>> {
+
   @Attribute(DataTypes.INTEGER)
   @PrimaryKey
   @AutoIncrement
   declare id: CreationOptional<number>
+
   @Attribute(DataTypes.STRING)
   @NotNull
   declare name: string
 
   @Attribute(DataTypes.STRING)
+  declare description: string
+
+  @Attribute(DataTypes.INTEGER)
   @NotNull
-  declare email: string
+  declare price: number
 
   @Attribute(DataTypes.STRING)
-  @NotNull
-  declare password: string
+  declare catagory: string
 
+  @Attribute(DataTypes.INTEGER)
+  @NotNull
+  declare stock: number
 }
 
 
-
-export default Customer
+export default Product

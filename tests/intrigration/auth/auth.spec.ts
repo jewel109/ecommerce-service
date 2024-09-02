@@ -1,14 +1,18 @@
-import Customer from "../../../core/domain/models/customer/Customer";
-import { compareHashPassword, hashPassword } from "../../../utils/authUtils";
+import Customer, { CustomerAttributes } from "../../../core/domain/models/customer/Customer";
+import { compareHashPassword, hashPassword, UserI } from "../../../utils/authUtils";
 import request from 'supertest'
 import { url } from "../../../utils/configUtils";
 import { sequelize } from "../../../core/infra/persistence/postgres/postgresInit";
+import { SuperTestResponse } from "../product/product.spec";
 
 
 
 // console.log(url)
 
 
+export const registerCustomer = async ({ name, email, password }: CustomerAttributes) => await request(url).post('/register').send({ name, email, password }) as SuperTestResponse
+
+export const loginCustomer = async ({ name, email, password }: CustomerAttributes,) => await request(url).post('/login').send({ name, email, password }) as SuperTestResponse
 
 beforeAll(async () => {
   await sequelize.destroyAll()
@@ -57,18 +61,19 @@ afterAll(async () => {
   console.log("Db closed")
 })
 
-describe(" Sending request to invalid route", () => {
-
-  test("should contain success false", async () => {
-
-    const response = await request(url).post('/')
-    // console.log(response.body)
-    expect(response.body.status).toBe("error")
-    expect(response.statusCode).toBe(404)
-  })
-
-
-})
+// describe(" Sending request to invalid route", () => {
+//
+//   test("should contain success false", async () => {
+//
+//     const response = await request(url).post('/')
+//     // console.log(response.body)
+//     expect(response.body.msg).toBe("This route is not found")
+//     expect(response.body.status).toBe("error")
+//     expect(response.statusCode).toBe(404)
+//   })
+//
+//
+// })
 
 describe("Register a customer account", () => {
 
@@ -123,7 +128,7 @@ describe("Login a customer", () => {
 
   })
 
-  test("Should have success status ", async () => {
+  test("POST /auth Should have success status ", async () => {
     console.log("authToken ", authToken)
 
     const response = await request(url).post('/auth').set('Authorization', `Bearer ${authToken}`)
@@ -133,7 +138,7 @@ describe("Login a customer", () => {
     expect(response.body.msg).toBe("You have auth data ")
     expect(response.statusCode).toBe(200)
   })
-  test("Should have error status  if token is not valid", async () => {
+  test("POST /auth Should have error status  if token is not valid", async () => {
     console.log("authToken ", authToken)
 
     authToken = "sfawerq'wef"

@@ -3,9 +3,9 @@ services:
     image: postgres:latest
     container_name: postgres_container1
     environment:
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
-      POSTGRES_DB: mydatabase
+      POSTGRES_USER: raihan
+      POSTGRES_PASSWORD: raihan
+      POSTGRES_DB: test_db
     ports:
       - "5432:5432"
     volumes:
@@ -31,7 +31,7 @@ services:
     container_name: zookeeper
     restart: unless-stopped
     ports:
-      - "2181:2181"
+      - "2181"
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
 

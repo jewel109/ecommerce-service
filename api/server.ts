@@ -2,7 +2,9 @@ import express from "express";
 import { setupMiddleWares } from "./middlewares/setupMiddlewares";
 import { InitializePostgres } from "../core/infra/persistence/postgres/postgresInit";
 import { port } from "../utils/configUtils";
+
 InitializePostgres()
+
 
 
 const app = express()

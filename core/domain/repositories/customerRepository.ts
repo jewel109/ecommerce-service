@@ -1,24 +1,6 @@
 import { compareHashPassword, hashPassword } from "../../../utils/authUtils";
+import { createDefaultResponse, RepositoryResponse } from "../../../utils/controllerUtils";
 import Customer, { CustomerAttributes } from "../models/customer/Customer";
-type RepositoryResponse<T = any> = {
-  status: "success" | "error";
-  msg: string;
-  data: T | null;
-  statusCode: number;
-}
-function createDefaultResponse<T>({
-  status = "error",
-  msg = "An error occurred", // Default message
-  data = null,
-  statusCode = 404,          // Default HTTP status code to 404
-}: Partial<RepositoryResponse<T>> = {}): RepositoryResponse<T> {
-  return {
-    status,
-    msg,
-    data,
-    statusCode,
-  };
-}
 interface CustomerI {
   id: number;
   name: string;

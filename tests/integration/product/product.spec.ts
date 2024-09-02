@@ -5,15 +5,7 @@ import { STATUS_CODE_201, SUCCMSG } from '../../../utils/controllerUtils'
 import { loginCustomer, registerCustomer } from '../auth/auth.spec'
 import { CustomerAttributes } from '../../../core/domain/models/customer/Customer'
 import { sequelize } from '../../../core/infra/persistence/postgres/postgresInit'
-
-export interface SuperTestResponse {
-  body: {
-    msg: string,
-    status: "success" | "error"
-    data?: any
-  },
-  statusCode: number
-}
+import { SuperTestResponse } from '../../../utils/testUtils'
 
 const productData: ProductAttributes = {
   name: 'light',

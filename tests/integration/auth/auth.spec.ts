@@ -3,7 +3,7 @@ import { compareHashPassword, hashPassword, UserI } from "../../../utils/authUti
 import request from 'supertest'
 import { url } from "../../../utils/configUtils";
 import { sequelize } from "../../../core/infra/persistence/postgres/postgresInit";
-import { SuperTestResponse } from "../product/product.spec";
+import { SuperTestResponse } from "../../../utils/testUtils";
 
 
 

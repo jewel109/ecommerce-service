@@ -3,7 +3,7 @@ import { Attribute, AutoIncrement, NotNull, PrimaryKey } from "@sequelize/core/d
 
 export interface OrderAttributes {
   id: number;
-  userId: number;
+  customerId: number;
   totalAmount: number;
   status: "pending" | "fulfilled" | "failed";
 }
@@ -16,7 +16,7 @@ export default class Order extends Model<InferAttributes<Order>, InferCreationAt
 
   @Attribute(DataTypes.INTEGER)
   @NotNull
-  declare userId: number
+  declare customerId: number
 
   @Attribute(DataTypes.INTEGER)
   @NotNull

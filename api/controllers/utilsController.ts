@@ -15,7 +15,7 @@ export const tokenSendingController = withRequest(async (req: AuthenticatedReque
 
     const { email, name } = req.user ?? {}
 
-    console.log("user email", email)
+    // console.log("user email", email)
     if (!name || !email) {
       return sendResponse(res, { msg: "name or email not found", status: "error", statusCode: 404 })
     }
@@ -52,7 +52,7 @@ export const getPrivateAccessController = withRequest<AuthenticatedRequest>(asyn
 
     const data = jwt.verify(token, jwtSecret)
 
-    console.log(data)
+    // console.log(data)
 
     if (!data || typeof data === 'string') return sendResponse(res, { status: 'error', statusCode: 401, msg: "jwt can't verify the token" })
 
@@ -71,7 +71,7 @@ export const authDataController = withRequest<AuthenticatedRequest>(async (req, 
   try {
     const { email, name } = req.user ?? {}
 
-    console.log("user email", email)
+    // console.log("user email", email)
     if (!name || !email) {
       return sendResponse(res, { msg: "name or email not found", status: "error", statusCode: 404 })
     }

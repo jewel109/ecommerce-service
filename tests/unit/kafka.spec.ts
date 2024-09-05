@@ -1,4 +1,5 @@
 import { Kafka } from "kafkajs"
+import { JSON } from "sequelize";
 
 const kafka = new Kafka({
   clientId: 'my-app',
@@ -31,11 +32,14 @@ describe("Testing Kafka Connection ", () => {
     await consumer.subscribe({ topic: 'test-topic', fromBeginning: true });
 
     // Consume the message
-    const messages = [];
+    const messages: string[] = [];
     const messagePromise = new Promise<void>((resolve) => {
       consumer.run({
         eachMessage: async ({ topic, partition, message }) => {
-          messages.push(message.value.toString());
+          const msg = message.value?.toString()
+          if (msg) {
+            messages.push(msg);
+          }
           resolve(); // Resolve the promise once the message is consumed
         },
       });

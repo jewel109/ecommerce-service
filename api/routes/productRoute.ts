@@ -6,4 +6,4 @@ export const productRouter = express.Router()
 
 productRouter.use(getPrivateAccessController)
 
-productRouter.post('/product', getPrivateAccessController, productAddingController)
+productRouter.post('/add', getPrivateAccessController, productAddingController)

@@ -1,18 +1,20 @@
-import Customer, { CustomerAttributes } from "../../../core/domain/models/customer/Customer";
-import { compareHashPassword, hashPassword, UserI } from "../../../utils/authUtils";
-import request from 'supertest'
-import { url } from "../../../utils/configUtils";
+import request from 'supertest';
+import { CustomerAttributes } from "../../../core/domain/models/customer/Customer";
 import { sequelize } from "../../../core/infra/persistence/postgres/postgresInit";
-import { SuperTestResponse } from "../../../utils/testUtils";
+import { compareHashPassword, hashPassword } from "../../../utils/authUtils";
+import { url } from "../../../utils/configUtils";
+import { resetDb, SuperTestResponse } from "../../../utils/testUtils";
 
 
 
 // console.log(url)
 
+export const customerData: CustomerAttributes = { email: "jewelrana@gmail.com", password: "1253", name: "raihan" }
 
-export const registerCustomer = async ({ name, email, password }: CustomerAttributes) => await request(url).post('/register').send({ name, email, password }) as SuperTestResponse
 
-export const loginCustomer = async ({ name, email, password }: CustomerAttributes,) => await request(url).post('/login').send({ name, email, password }) as SuperTestResponse
+export const registerCustomer = async ({ name, email, password }: CustomerAttributes) => await request(url).post('/api/v1/customer/register').send({ name, email, password }) as SuperTestResponse
+
+export const loginCustomer = async ({ name, email, password }: CustomerAttributes,) => await request(url).post('/api/v1/customer/login').send({ name, email, password }) as SuperTestResponse
 
 beforeAll(async () => {
   await sequelize.destroyAll()
@@ -61,26 +63,18 @@ afterAll(async () => {
   console.log("Db closed")
 })
 
-// describe(" Sending request to invalid route", () => {
-//
-//   test("should contain success false", async () => {
-//
-//     const response = await request(url).post('/')
-//     // console.log(response.body)
-//     expect(response.body.msg).toBe("This route is not found")
-//     expect(response.body.status).toBe("error")
-//     expect(response.statusCode).toBe(404)
-//   })
-//
-//
-// })
 
 describe("Register a customer account", () => {
 
+  beforeAll(async () => {
+    await resetDb()
+  })
+
   test("should contain success status", async () => {
 
-    const response = await request(url).post('/register').send({ name: "jewel", email: "jewel@gmail.com", password: "1234" })
-    // console.log(response.body)
+    const response = await registerCustomer(customerData)   // console.log(response.body)
+
+    expect(response.body.msg).toBe("Customer created")
     expect(response.body.status).toBe("success")
     expect(response.statusCode).toBe(201)
   })
@@ -97,20 +91,21 @@ describe("Login a customer", () => {
   let authToken = ""
 
   beforeAll(async () => {
-    const response = await request(url).post('/login').send({ email: "jewel@gmail.com", password: "1234" });
+    const response = await loginCustomer(customerData)
     authToken = response.body.data.token;
-    console.log(authToken)
-    console.log(response.body.data.token)
+    // console.log(authToken)
+    // console.log(response.body.data.token)
     expect(response.body.status).toBe("success")
     expect(response.body.data.token).not.toBe(null)
   });
 
 
   test("Should contain success status", async () => {
-    const response = await request(url).post('/login').send({ email: "jewel@gmail.com", password: "1234" })
+    const response = await request(url).post('/api/v1/customer/login').send(customerData)
 
     // console.log(response.body)
 
+    expect(response.body.msg).toBe("Token created successfully")
     expect(response.body.status).toBe("success")
     expect(response.body.data.token).not.toBe(null)
 
@@ -118,7 +113,7 @@ describe("Login a customer", () => {
   })
 
   test("Should contain status error", async () => {
-    const response = await request(url).post('/login').send({ email: "jewel@gmail.com", password: "12345" })
+    const response = await request(url).post('/api/v1/customer/login').send({ email: "jewel@gmail.com", password: "12345" })
 
     // console.log(response.body)
 
@@ -129,22 +124,22 @@ describe("Login a customer", () => {
   })
 
   test("POST /auth Should have success status ", async () => {
-    console.log("authToken ", authToken)
+    // console.log("authToken ", authToken)
 
-    const response = await request(url).post('/auth').set('Authorization', `Bearer ${authToken}`)
-    console.log(response.body)
+    const response = await request(url).post('/api/v1/customer/auth').set('Authorization', `Bearer ${authToken}`)
+    // console.log(response.body)
     expect(response.body.status).toBe("success")
     expect(response.body.data).not.toBe(null)
     expect(response.body.msg).toBe("You have auth data ")
     expect(response.statusCode).toBe(200)
   })
   test("POST /auth Should have error status  if token is not valid", async () => {
-    console.log("authToken ", authToken)
+    // console.log("authToken ", authToken)
 
     authToken = "sfawerq'wef"
 
-    const response = await request(url).post('/auth').set('Authorization', `Bearer ${authToken}`)
-    console.log(response.body)
+    const response = await request(url).post('/api/v1/customer/auth').set('Authorization', `Bearer ${authToken}`)
+    // console.log(response.body)
     expect(response.body.status).toBe("error")
     expect(response.body.data).toBe(null)
     expect(response.body.msg).toBe("jwt malformed")

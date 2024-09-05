@@ -26,4 +26,8 @@ export interface AuthenticatedRequest extends Request {
   user?: UserI; // or just `user: User;` if you know `user` will always be there
 }
 
+export interface DataWithRequest extends AuthenticatedRequest {
+  data?: { data: any }
+}
+
 

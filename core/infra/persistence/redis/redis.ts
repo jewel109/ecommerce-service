@@ -17,7 +17,7 @@ export async function RedisConnect() {
 
   // Get the value of a key
   const value = await redisClient.get('myKey');
-  console.log('Value of myKey:', value);
+  // console.log('Value of myKey:', value);
 
   // Close the connection
   await redisClient.quit();

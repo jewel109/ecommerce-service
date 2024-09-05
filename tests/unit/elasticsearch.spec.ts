@@ -1,7 +1,7 @@
 import { Client } from "@elastic/elasticsearch"
 
 
-console.log("node env ", process.env.NODE_ENV)
+// console.log("node env ", process.env.NODE_ENV)
 describe("Testing Elastic search db connection", () => {
 
 
@@ -14,6 +14,6 @@ describe("Testing Elastic search db connection", () => {
 
 
     const indexExists = await client.indices.exists({ index: 'test-index' });
-    console.log(indexExists)
+    // console.log(indexExists)
   })
 })

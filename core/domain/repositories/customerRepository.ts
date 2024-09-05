@@ -19,6 +19,24 @@ class CustomerRepository {
     return Customer.create(data);
   }
 
+  async findByEmail(email: string): Promise<RepositoryResponse> {
+
+    try {
+
+      const data = await Customer.findOne({
+        where: {
+          email: email
+        }
+      })
+      if (!data) return createDefaultResponse({ msg: "Customer is not  found with this email" })
+      return createDefaultResponse({ msg: "Customer found", statusCode: 200, status: "success", data })
+
+    } catch (error) {
+      const e = error as Error
+      return createDefaultResponse({ msg: e.message, statusCode: 500 })
+    }
+  }
+
   async register(name: string, email: string, password: string): Promise<RepositoryResponse> {
     try {
 
@@ -26,13 +44,13 @@ class CustomerRepository {
         where: { email: email }
       })
 
-      console.log(emailExist)
+      // console.log(emailExist)
       if (emailExist) return createDefaultResponse({ msg: "email already exist ", statusCode: 409, })
 
       const hashedPassword = await hashPassword(password)
       const data = await Customer.create({ name, email, password: hashedPassword })
       return createDefaultResponse({
-        data, statusCode: 201, msg: "User created", status: "success"
+        data, statusCode: 201, msg: "Customer created", status: "success"
       })
     } catch (error) {
 

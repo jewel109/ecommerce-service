@@ -1,14 +1,14 @@
-import { OrderAttributes } from "../../../core/domain/models/order/Order";
 import { PaymentAttributes } from "../../../core/domain/models/payment/Payment";
-import { ProductAttributes } from "../../../core/domain/models/products/Product";
 import { sequelize } from "../../../core/infra/persistence/postgres/postgresInit";
 
-import request from 'supertest'
-import { url } from "../../../utils/configUtils";
+import request from 'supertest';
 import { CustomerAttributes } from "../../../core/domain/models/customer/Customer";
-import { SuperTestResponse } from "../../../utils/testUtils";
-import { loginCustomer, registerCustomer } from "../auth/auth.spec";
+import { url } from "../../../utils/configUtils";
 import { STATUS_CODE_201, SUCCMSG } from "../../../utils/controllerUtils";
+import { SuperTestResponse, token } from "../../../utils/testUtils";
+import { createProductTest, productData } from "../product/product.spec";
+import { ProductAttributes } from "../../../core/domain/models/products/Product";
+import { orderData, orderTest } from "../order/order.spec";
 
 
 
@@ -24,26 +24,13 @@ const paymentData: PaymentAttributes = {
   orderId: 1
 }
 
-// customer will request to procced the payment method with giving the related data 
-//
-//
-//
-//
-//
-//
 
-const productData: ProductAttributes = {
-  name: 'light',
-  catagory: 'electronics',
-  description: "light will pull out dark",
-  price: 20,
-  stock: 3
-}
+
+
+
 const customerData: CustomerAttributes = { email: "jewelrana@gmail.com", password: "1253", name: "raihan" }
 
 
-export const createProductTest = async ({ name, catagory, description, price, stock }: ProductAttributes, token: string) =>
-  await request(url).post('/product').send({ name, catagory, description, price, stock }).set('Authorization', `bearer ${token}`) as SuperTestResponse
 
 
 
@@ -52,53 +39,52 @@ beforeAll(async () => {
 })
 
 
+export const paymentTest = async ({ amount, orderId, status, id, method }: PaymentAttributes, token: string) => {
 
-describe("Handling Authentication", () => {
-
-  test("should register customer", async () => {
-    const { body: { msg, status, data }, statusCode } = await registerCustomer(customerData)
-
-    expect(msg).toBe("User created")
-    expect(statusCode).toBe(STATUS_CODE_201)
-  })
-
-})
-
-describe("Handling POST /product request should success", () => {
-
-  //  after creating a product  this product data will consume by kafka consumer and it will be indexed to Elastic search . A notification will be send to the Seller that he had created a product he can update,delete  the product
-
-  let token = ''
-
-  beforeAll(async () => {
-    const { body: { msg, status, data }, statusCode } = await loginCustomer(customerData)
-
-    expect(msg).toBe("Token created successfully")
-    expect(data).toHaveProperty("token")
-    token = data.token
-    console.log(token)
-
-  })
+  return await request(url).post('/api/v1/payment/add').send().set('Authorization', `bearer ${token}`) as SuperTestResponse
+}
 
 
 
+describe("Payment ", () => {
 
 
-  test("should contain success status", async () => {
+  let orderId = 0
+
+
+  test("should create a product", async () => {
 
     const { body: { status, msg, data }, statusCode } = await createProductTest(productData, token)
 
 
     expect(msg).toBe(SUCCMSG)
     expect(status).toBe("success")
+    expect(data).toMatchObject(productData)
+    expect(statusCode).toBe(STATUS_CODE_201)
   })
 
 
+  test("Should make an order", async () => {
 
-  test("Elastic search should have indexed this product data and it will be searchable", async () => {
+    const { body: { status, msg, data }, statusCode } = await orderTest(orderData)
+    expect(msg).toBe("Order created successfully")
+    expect(statusCode).toBe(STATUS_CODE_201)
+    expect(status).toBe("success")
+    expect(data).toMatchObject(orderData)
+    paymentData.orderId = data.orderId
 
+    console.log("order id ", data.orderId)
+  })
+  test("Should make the payment", async () => {
 
+    const { body: { msg, status, data }, statusCode } = await paymentTest(paymentData, token)
+
+    expect(msg).toBe("Payment is made")
+    expect(status).toBe("success")
+    expect(data).toMatchObject(paymentData)
+    expect(statusCode).toBe(201)
 
   })
 
 })
+

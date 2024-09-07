@@ -5,8 +5,10 @@
   "main": "api/server.ts",
   "scripts": {
     "test": "NODE_ENV=test jest --watchAll",
-    "start:test": "NODE_ENV=test nodemon api/server.ts",
-    "start:dev": "NODE_ENV=dev nodemon --exec ts-node api/server.ts"
+    "start:test": "NODE_ENV=test ts-node api/server.ts",
+    "start:dev": "NODE_ENV=dev nodemon --exec ts-node api/server.ts",
+    "start:consuming": "ts-node --inspect ./core/infra/services/eventConsumerService.ts",
+    "compile": " ts-node ./core/infra/services/eventConsumerService.ts "
   },
   "keywords": [],
   "author": "",
@@ -17,17 +19,20 @@
     "@sequelize/postgres": "7.0.0-alpha.41",
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
+    "@types/express-winston": "^4.0.0",
     "@types/jsonwebtoken": "^9.0.6",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "express-winston": "^4.2.0",
     "jsonwebtoken": "^9.0.2",
     "kafkajs": "^2.2.4",
     "path": "^0.12.7",
     "redis": "^4.7.0",
     "stripe": "^16.9.0",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "winston": "^3.14.2"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",

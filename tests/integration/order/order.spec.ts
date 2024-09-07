@@ -7,6 +7,8 @@ import { url } from "../../../utils/configUtils"
 import { STATUS_CODE_201, SUCCMSG } from "../../../utils/controllerUtils"
 import { SuperTestResponse, token } from "../../../utils/testUtils"
 import { createProductTest } from "../product/product.spec"
+import { adminCreation, deleteTopic } from '../../../utils/kafkaUtils'
+import { kafkaInstance } from '../../../core/infra/services/kafkaDefaults'
 
 // register and loggeed in a customer 
 // creation of a product
@@ -17,10 +19,9 @@ import { createProductTest } from "../product/product.spec"
 
 
 export const orderData: OrderAttributes = {
-  id: 1,
   customerId: 1,
   totalAmount: 40,
-  status: "pending"
+  orderStatus: "pending"
 }
 
 
@@ -37,7 +38,15 @@ const customerData: CustomerAttributes = { email: "jewelrana@gmail.com", passwor
 
 
 beforeAll(async () => {
-  await sequelize.destroyAll()
+  try {
+    await sequelize.destroyAll()
+
+    const admin = await adminCreation(kafkaInstance)
+    await deleteTopic(admin, 'order')
+
+  } catch (error) {
+    console.log(error)
+  }
 })
 
 

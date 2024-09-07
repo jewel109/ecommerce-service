@@ -15,6 +15,6 @@ describe("get access to server", () => {
 
   test("should succes", async () => {
     const response = await request(app).get("/")
-    console.log(response.body)
+    // console.log(response.body)
   })
 })

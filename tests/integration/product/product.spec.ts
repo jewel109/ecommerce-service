@@ -69,6 +69,8 @@ describe("Product and Authentication Handling", () => {
 
       expect(msg).toBe(SUCCMSG)
       expect(status).toBe("success")
+      expect(data).toMatchObject(productData)
+      expect(statusCode).toBe(201)
     })
 
 

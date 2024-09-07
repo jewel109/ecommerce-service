@@ -26,6 +26,7 @@
     "kafkajs": "^2.2.4",
     "path": "^0.12.7",
     "redis": "^4.7.0",
+    "stripe": "^16.9.0",
     "ts-node": "^10.9.2"
   },
   "devDependencies": {

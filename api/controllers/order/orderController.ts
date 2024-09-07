@@ -1,7 +1,10 @@
 import { OrderAttributes } from "../../../core/domain/models/order/Order";
 import { orderService } from "../../../core/domain/repositories/orderRepository";
-import { AuthenticatedRequest, DataWithRequest } from "../../../utils/authUtils";
-import { sendResponse, withRequest } from "../../../utils/controllerUtils";
+import { kafkaInstance } from "../../../core/infra/services/kafkaDefaults";
+import { DataWithRequest } from "../../../utils/authUtils";
+import { RepositoryResponse, sendResponse, withRequest } from "../../../utils/controllerUtils";
+import { adminCreation, createTopic, creatingKafkaInstance, creatingProducer, KafkaCustomConfig, sendingMessage } from "../../../utils/kafkaUtils";
+
 
 
 export const createOrderController = withRequest<DataWithRequest>(async (req, res) => {
@@ -14,18 +17,27 @@ export const createOrderController = withRequest<DataWithRequest>(async (req, re
     // console.log("token customerData ", user)
     // console.log("customerData ", customerData)
 
-    const { status: orderStatus, id, customerId, totalAmount }: OrderAttributes = req.body
+    const { orderStatus, customerId, totalAmount }: OrderAttributes = req.body
 
-    if (!orderStatus || !id || !customerId || !totalAmount) {
+    if (!orderStatus || !customerId || !totalAmount) {
       return sendResponse(res, { msg: "order data is not provided", statusCode: 404 })
 
     }
 
-    const { status, msg, statusCode, data } = await orderService.create({ status: orderStatus, totalAmount, customerId, id })
+
+    const { status, msg, statusCode, data } = await orderService.create({ orderStatus, totalAmount, customerId })
+    const admin = await adminCreation(kafkaInstance)
+    await createTopic(admin, 'order')
+
+
+    const producer = await creatingProducer(kafkaInstance)
+    await sendingMessage(producer, 'order', [{ key: JSON.stringify(1), value: JSON.stringify(data) }])
+
     return sendResponse(res, { msg, statusCode, status, data })
 
   } catch (error) {
     const e = error as Error
+    console.log(e)
     return sendResponse(res, { msg: e.message, statusCode: 500 })
   }
 

@@ -1,4 +1,4 @@
-import { DataTypes, InferAttributes, InferCreationAttributes, Model } from "@sequelize/core";
+import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from "@sequelize/core";
 import { Attribute, AutoIncrement, NotNull, PrimaryKey } from "@sequelize/core/decorators-legacy";
 
 
@@ -7,15 +7,15 @@ export interface PaymentAttributes {
   orderId: number;
   amount: number;
   method: "stripe";
-  status: "pending" | "fulfilled";
+  paymentStatus: 'pending' | 'fulfilled' | "failed";
 }
 
-export default class Payment extends Model<InferAttributes<Payment>, InferCreationAttributes<Payment>> implements PaymentAttributes {
+export class Payment extends Model<InferAttributes<Payment>, InferCreationAttributes<Payment>> implements PaymentAttributes {
 
   @Attribute(DataTypes.INTEGER)
   @PrimaryKey
   @AutoIncrement
-  declare id: number;
+  declare id: CreationOptional<number>;
 
   @Attribute(DataTypes.INTEGER)
   @NotNull
@@ -34,7 +34,8 @@ export default class Payment extends Model<InferAttributes<Payment>, InferCreati
 
   @Attribute(DataTypes.STRING)
   @NotNull
-  declare status: "pending"
+  declare paymentStatus: "pending" | "fulfilled" | "failed"
 
 
 }
+

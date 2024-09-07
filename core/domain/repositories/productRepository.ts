@@ -18,7 +18,7 @@ export class ProductRepository {
         return createDefaultResponse({ msg: "Product is not Created" })
       }
 
-      return createDefaultResponse({ status: "success", msg: SUCCMSG, statusCode: STATUS_CODE_201 })
+      return createDefaultResponse({ status: "success", msg: SUCCMSG, statusCode: STATUS_CODE_201, data })
 
     } catch (error) {
       const e = error as Error

@@ -1,3 +1,4 @@
+REST API server where Customer/Seller can be added by Admin. Customer can add product to cart for buying, make order, make checkout. Admin can add product to sell. There is notification system for Customer and Seller.
 
 First copy the  `.env.example` to `./config/dev.env`
 
